@@ -2,13 +2,13 @@
 /**
  * Plugin Name: Affiliate Links Sidebar Widget
  * Description: Dynamically pulls affiliate links from the current page content (default: Amazon amzn.to) and displays them in a clean sidebar widget. Limited to 5 links per page in free version. Includes shortcode [affiliate-links].
- * Version: 1.6.11
+ * Version: 1.6.12
  * Author: CreatorConnected
  * Author URI: https://creatorconnected.com
  * License: GPL-2.0+
  * Text Domain: affiliate-links-sidebar-widget
  * Requires at least: 6.0
- * Tested up to: 6.9.1
+ * Tested up to: 6.9
  * Requires PHP: 7.4
  */
 
@@ -92,20 +92,22 @@ function affiliate_links_add_settings_page() {
 
 function affiliate_links_settings_page() {
     if ( isset( $_POST['affiliate_links_submit'] ) && check_admin_referer( 'affiliate_links_settings_nonce' ) ) {
+        $input = wp_unslash( $_POST );
+
         $settings = [
-            'prefix'                    => esc_url_raw( trim( $_POST['prefix'] ?? 'https://amzn.to/' ) ),
-            'sidebar_css'               => trim( $_POST['sidebar_css'] ?? '' ),
-            'shortcode_css'             => trim( $_POST['shortcode_css'] ?? '' ),
-            'widget_title'              => sanitize_text_field( $_POST['widget_title'] ?? 'Recommended Products on Page' ),
-            'shortcode_title'           => sanitize_text_field( $_POST['shortcode_title'] ?? 'Recommended Products on Page' ),
-            'disclosure'                => wp_kses_post( $_POST['disclosure'] ?? '' ),
-            'credit_location'           => sanitize_text_field( $_POST['credit_location'] ?? 'none' ),
-            'hide_shortcode_on_desktop' => isset( $_POST['hide_shortcode_on_desktop'] ) ? 1 : 0,
-            'link_new_tab'              => isset( $_POST['link_new_tab'] ) ? 1 : 0,
-            'link_rel_sponsored'        => isset( $_POST['link_rel_sponsored'] ) ? 1 : 0,
-            'link_rel_nofollow'         => isset( $_POST['link_rel_nofollow'] ) ? 1 : 0,
-            'link_rel_noopener'         => isset( $_POST['link_rel_noopener'] ) ? 1 : 0,
-            'max_links_display'         => max(1, min(5, (int) ($_POST['max_links_display'] ?? 5))),
+            'prefix'                    => esc_url_raw( trim( $input['prefix'] ?? 'https://amzn.to/' ) ),
+            'sidebar_css'               => trim( $input['sidebar_css'] ?? '' ),
+            'shortcode_css'             => trim( $input['shortcode_css'] ?? '' ),
+            'widget_title'              => sanitize_text_field( $input['widget_title'] ?? 'Recommended Products on Page' ),
+            'shortcode_title'           => sanitize_text_field( $input['shortcode_title'] ?? 'Recommended Products on Page' ),
+            'disclosure'                => wp_kses_post( $input['disclosure'] ?? '' ),
+            'credit_location'           => sanitize_text_field( $input['credit_location'] ?? 'none' ),
+            'hide_shortcode_on_desktop' => isset( $input['hide_shortcode_on_desktop'] ) ? 1 : 0,
+            'link_new_tab'              => isset( $input['link_new_tab'] ) ? 1 : 0,
+            'link_rel_sponsored'        => isset( $input['link_rel_sponsored'] ) ? 1 : 0,
+            'link_rel_nofollow'         => isset( $input['link_rel_nofollow'] ) ? 1 : 0,
+            'link_rel_noopener'         => isset( $input['link_rel_noopener'] ) ? 1 : 0,
+            'max_links_display'         => max( 1, min( 5, (int) ( $input['max_links_display'] ?? 5 ) ) ),
         ];
         update_option( 'affiliate_links_settings', $settings );
         echo '<div class="notice notice-success is-dismissible"><p>Settings saved.</p></div>';
@@ -205,7 +207,7 @@ function affiliate_links_settings_page() {
                     <td>
                         <select name="max_links_display">
                             <?php for ( $i = 1; $i <= 5; $i++ ) : ?>
-                                <option value="<?php echo $i; ?>" <?php selected( $settings['max_links_display'], $i ); ?>><?php echo $i; ?></option>
+                                <option value="<?php echo esc_attr( $i ); ?>"<?php selected( $settings['max_links_display'], $i ); ?>><?php echo esc_html( $i ); ?></option>
                             <?php endfor; ?>
                         </select>
                         <p class="description">Choose how many affiliate links to show on this page (limited to 5 in free version).</p>
@@ -290,11 +292,11 @@ function affiliate_links_settings_page() {
 add_action( 'wp_head', 'affiliate_links_output_custom_css', 999 );
 function affiliate_links_output_custom_css() {
     $settings = get_option( 'affiliate_links_settings', [] );
-
-    $css = trim( ($settings['sidebar_css'] ?? '') . "\n" . ($settings['shortcode_css'] ?? '') );
+    $css = trim( ( $settings['sidebar_css'] ?? '' ) . "\n" . ( $settings['shortcode_css'] ?? '' ) );
 
     if ( $css !== '' ) {
-        echo '<style id="affiliate-links-custom">' . $css . '</style>';
+        // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- User CSS sanitized with wp_strip_all_tags; safe for <style> block
+        echo '<style id="affiliate-links-custom">' . wp_strip_all_tags( $css ) . '</style>';
     }
 }
 
@@ -324,7 +326,7 @@ class Affiliate_Links_Widget extends WP_Widget {
         $links = array_unique( $matches[1] ?? [] );
         if ( empty( $links ) ) return;
 
-        $max_display = ! empty( $settings['max_links_display'] ) ? max(1, min(5, (int) $settings['max_links_display'])) : 5;
+        $max_display = ! empty( $settings['max_links_display'] ) ? max( 1, min( 5, (int) $settings['max_links_display'] ) ) : 5;
         $links = array_slice( $links, 0, $max_display );
 
         $title = ! empty( $instance['title'] ) ? $instance['title'] : ( $settings['widget_title'] ?? 'Recommended Products on Page' );
@@ -337,32 +339,35 @@ class Affiliate_Links_Widget extends WP_Widget {
         if ( ! empty( $settings['link_rel_sponsored'] ) ) $rel_parts[] = 'sponsored';
         if ( ! empty( $settings['link_rel_nofollow'] ) )   $rel_parts[] = 'nofollow';
         if ( ! empty( $settings['link_rel_noopener'] ) && ! empty( $settings['link_new_tab'] ) ) $rel_parts[] = 'noopener';
-        $rel_attr = $rel_parts ? ' rel="' . implode( ' ', $rel_parts ) . '"' : '';
+        $rel_attr = $rel_parts ? ' rel="' . esc_attr( implode( ' ', $rel_parts ) ) . '"' : '';
 
+        // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Core widget args; escaping would break HTML structure
         echo $args['before_widget'];
         echo '<div class="' . esc_attr( $class ) . '">';
+        // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Core widget args; escaping would break HTML structure
         echo $args['before_title'] . esc_html( $title ) . $args['after_title'];
         echo '<ul>';
         foreach ( $links as $link ) {
             $text = $this->get_link_text( $content, $link );
             $display = $text ?: esc_html( str_replace( ['https://','http://'], '', $link ) );
-            echo '<li><a href="' . esc_url( $link ) . '"' . $target . $rel_attr . '>' . $display . '</a></li>';
+            echo '<li><a href="' . esc_url( $link ) . '"' . $target . $rel_attr . '>' . esc_html( $display ) . '</a></li>';
         }
         echo '</ul>';
         if ( ! empty( $settings['disclosure'] ) ) {
-            echo '<p class="affiliate-disclosure">' . esc_html( $settings['disclosure'] ) . '</p>';
+            echo '<p class="affiliate-disclosure">' . wp_kses_post( $settings['disclosure'] ) . '</p>';
         }
         if ( in_array( $settings['credit_location'] ?? 'none', ['sidebar', 'both'] ) ) {
             echo '<p class="plugin-credit">Powered by <a href="https://creatorconnected.com" target="_blank" rel="nofollow">CreatorConnected</a></p>';
         }
         echo '</div>';
+        // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Core widget args; escaping would break HTML structure
         echo $args['after_widget'];
     }
 
     private function get_link_text( $content, $link ) {
         $escaped = preg_quote( $link, '/' );
         preg_match( '/<a\s+[^>]*href=["\']' . $escaped . '["\'][^>]*>(.*?)<\/a>/is', $content, $m );
-        return ! empty( $m[1] ) ? strip_tags( $m[1] ) : '';
+        return ! empty( $m[1] ) ? wp_strip_all_tags( $m[1] ) : '';
     }
 
     public function form( $instance ) {
@@ -370,22 +375,22 @@ class Affiliate_Links_Widget extends WP_Widget {
         $desktop_only = ! empty( $instance['desktop_only'] );
         ?>
         <p>
-            <label for="<?php echo $this->get_field_id('title'); ?>">Widget Title (overrides global)</label>
-            <input class="widefat" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" type="text" value="<?php echo esc_attr( $title ); ?>">
+            <label for="<?php echo esc_attr( $this->get_field_id('title') ); ?>">Widget Title (overrides global)</label>
+            <input class="widefat" id="<?php echo esc_attr( $this->get_field_id('title') ); ?>" name="<?php echo esc_attr( $this->get_field_name('title') ); ?>" type="text" value="<?php echo esc_attr( $title ); ?>">
         </p>
         <p>
-            <input type="checkbox" id="<?php echo $this->get_field_id('desktop_only'); ?>" name="<?php echo $this->get_field_name('desktop_only'); ?>" value="1" <?php checked( $desktop_only ); ?>>
-            <label for="<?php echo $this->get_field_id('desktop_only'); ?>">Show only on desktop (hide on mobile/tablet)</label>
+            <input type="checkbox" id="<?php echo esc_attr( $this->get_field_id('desktop_only') ); ?>" name="<?php echo esc_attr( $this->get_field_name('desktop_only') ); ?>" value="1" <?php checked( $desktop_only ); ?>>
+            <label for="<?php echo esc_attr( $this->get_field_id('desktop_only') ); ?>">Show only on desktop (hide on mobile/tablet)</label>
         </p>
         <p style="font-size:0.9em; color:#555;">
-            All settings: <a href="<?php echo admin_url('options-general.php?page=affiliate-links-sidebar-widget'); ?>">Settings → Affiliate Links Sidebar Widget</a>
+            All settings: <a href="<?php echo esc_url( admin_url('options-general.php?page=affiliate-links-sidebar-widget') ); ?>">Settings → Affiliate Links Sidebar Widget</a>
         </p>
         <?php
     }
 
     public function update( $new_instance, $old_instance ) {
         return [
-            'title'        => strip_tags( $new_instance['title'] ?? '' ),
+            'title'        => wp_strip_all_tags( $new_instance['title'] ?? '' ),
             'desktop_only' => ! empty( $new_instance['desktop_only'] ) ? 1 : 0,
         ];
     }
@@ -417,7 +422,7 @@ function affiliate_links_shortcode() {
         return '';
     }
 
-    $max_display = ! empty( $settings['max_links_display'] ) ? max(1, min(5, (int) $settings['max_links_display'])) : 5;
+    $max_display = ! empty( $settings['max_links_display'] ) ? max( 1, min( 5, (int) $settings['max_links_display'] ) ) : 5;
     $links = array_slice( $links, 0, $max_display );
 
     $title = $settings['shortcode_title'] ?? 'Recommended Products on Page';
@@ -427,7 +432,7 @@ function affiliate_links_shortcode() {
     if ( ! empty( $settings['link_rel_sponsored'] ) ) $rel_parts[] = 'sponsored';
     if ( ! empty( $settings['link_rel_nofollow'] ) )   $rel_parts[] = 'nofollow';
     if ( ! empty( $settings['link_rel_noopener'] ) && ! empty( $settings['link_new_tab'] ) ) $rel_parts[] = 'noopener';
-    $rel_attr = $rel_parts ? ' rel="' . implode( ' ', $rel_parts ) . '"' : '';
+    $rel_attr = $rel_parts ? ' rel="' . esc_attr( implode( ' ', $rel_parts ) ) . '"' : '';
 
     ob_start();
     ?>
@@ -438,14 +443,17 @@ function affiliate_links_shortcode() {
                 $text = '';
                 $escaped = preg_quote( $link, '/' );
                 preg_match( '/<a\s+[^>]*href=["\']' . $escaped . '["\'][^>]*>(.*?)<\/a>/is', $content, $m );
-                if ( ! empty( $m[1] ) ) $text = strip_tags( $m[1] );
+                if ( ! empty( $m[1] ) ) $text = wp_strip_all_tags( $m[1] );
                 $display = $text ?: esc_html( str_replace( ['https://','http://'], '', $link ) );
             ?>
-                <li><a href="<?php echo esc_url( $link ); ?>"<?php echo $target . $rel_attr; ?>><?php echo $display; ?></a></li>
+                <li><a href="<?php echo esc_url( $link ); ?>"<?php
+                    // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Concatenated attributes are hardcoded + esc_attr'd earlier
+                    echo $target . $rel_attr;
+                ?>><?php echo esc_html( $display ); ?></a></li>
             <?php endforeach; ?>
         </ul>
         <?php if ( ! empty( $settings['disclosure'] ) ) : ?>
-            <p class="affiliate-disclosure"><?php echo esc_html( $settings['disclosure'] ); ?></p>
+            <p class="affiliate-disclosure"><?php echo wp_kses_post( $settings['disclosure'] ); ?></p>
         <?php endif; ?>
         <?php if ( in_array( $settings['credit_location'] ?? 'none', ['shortcode', 'both'] ) ) : ?>
             <p class="plugin-credit">Powered by <a href="https://creatorconnected.com" target="_blank" rel="nofollow">CreatorConnected</a></p>
