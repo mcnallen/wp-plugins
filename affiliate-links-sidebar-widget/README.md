@@ -115,6 +115,7 @@ Yes — use the built-in Custom CSS fields, or override these classes in your th
 ## Screenshots & Preview
 
 Found here: https://creatorconnected.com/affiliate-links-sidebar-widget/
+
 Also live here: https://creatorconnected.com/best-pcs-pre-builts-for-video-editors-streamers-creators/
 
 ---
