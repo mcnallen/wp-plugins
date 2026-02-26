@@ -10,7 +10,7 @@ Automatically finds affiliate links (e.g. `amzn.to`) in your content and display
 - Requires WordPress: **6.0+**  
 - Tested up to: **6.9.1**  
 - Requires PHP: **7.4+**  
-- Stable tag / Version: **1.6.11**  
+- Stable tag / Version: **1.6.12**  
 - Tags: affiliate, amazon, links, shortcode, sidebar  
 
 ---
@@ -121,6 +121,9 @@ Also live here: https://creatorconnected.com/best-pcs-pre-builts-for-video-edito
 ---
 
 ## Changelog
+
+### 1.6.12
+- Small UI improvement for better readability
 
 ### 1.6.11
 - Added user-configurable Max Links to Display (1–5) in free version
