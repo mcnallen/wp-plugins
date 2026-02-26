@@ -1,13 +1,18 @@
-=== AI Reply Assistant ===
+# AI Reply Assistant
 
-Contributors: creatorconnected
-Donate link: https://cash.app/$creatorconnected
-Tags: ai, comments, moderation, replies, assistant, openai
-Requires at least: 6.0
-Tested up to: 6.9.1
-Requires PHP: 7.4
-Stable tag: 1.0.1
-License: GPLv2 or later
+Draft AI-assisted replies to real WordPress comments (human review required).
+
+## Plugin Details
+
+- **Contributors:** creatorconnected  
+- **Donate:** https://cash.app/$creatorconnected  
+- **Tags:** ai, comments, moderation, replies, assistant, openai  
+- **Requires at least:** 6.0  
+- **Tested up to:** 6.9.1  
+- **Requires PHP:** 7.4  
+- **Version:** 1.0.1  
+- **License:** GPLv2 or later  
+
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
 Draft AI-assisted replies to real WordPress comments (human review required). Generates editable reply drafts using OpenAI. No fake users. No auto-seeding.
