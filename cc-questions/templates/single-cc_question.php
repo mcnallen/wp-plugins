@@ -12,8 +12,8 @@
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 // Enqueue assets manually since we're bypassing the shortcode check
-wp_enqueue_style(  'cc-qa-style',  CC_QA_URL . 'assets/css/ccquestions.css',  array(), CC_QA_VERSION );
-wp_enqueue_script( 'cc-qa-script', CC_QA_URL . 'assets/js/ccquestions.js', array(), CC_QA_VERSION, array( 'strategy' => 'defer', 'in_footer' => true ) );
+wp_enqueue_style(  'cc-qa-style',  CC_QA_URL . 'assets/css/cc-questions.css',  array(), CC_QA_VERSION );
+wp_enqueue_script( 'cc-qa-script', CC_QA_URL . 'assets/js/cc-questions.js', array(), CC_QA_VERSION, array( 'strategy' => 'defer', 'in_footer' => true ) );
 // Use shared config so strings / nonce / login_url stay in one place
 wp_localize_script( 'cc-qa-script', 'CC_QA', cc_qa_js_config( get_permalink() ) );
 

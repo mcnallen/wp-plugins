@@ -6,7 +6,7 @@
  * Version:           2.9.0
  * Author:            CreatorConnected
  * Author URI:        https://creatorconnected.com
- * Text Domain:       ccquestions
+ * Text Domain:       cc-questions
  * Domain Path:       /languages
  * License:           GPL v2 or later
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
@@ -72,8 +72,8 @@ register_deactivation_hook( __FILE__, function() {
 
 add_action( 'wp_enqueue_scripts', 'cc_qa_register_assets' );
 function cc_qa_register_assets() {
-    wp_register_style(  'cc-qa-style',  CC_QA_URL . 'assets/css/ccquestions.css',  array(), CC_QA_VERSION );
-    wp_register_script( 'cc-qa-script', CC_QA_URL . 'assets/js/ccquestions.js', array(), CC_QA_VERSION, array( 'strategy' => 'defer', 'in_footer' => true ) );
+    wp_register_style(  'cc-qa-style',  CC_QA_URL . 'assets/css/cc-questions.css',  array(), CC_QA_VERSION );
+    wp_register_script( 'cc-qa-script', CC_QA_URL . 'assets/js/cc-questions.js', array(), CC_QA_VERSION, array( 'strategy' => 'defer', 'in_footer' => true ) );
 
     global $post;
     if ( is_a( $post, 'WP_Post' ) && has_shortcode( $post->post_content, 'cc_qa' ) ) {

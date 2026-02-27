@@ -193,8 +193,8 @@ The plugin has not been tested on Multisite installations and is not officially 
 
 = 2.9.0 =
 * Plugin renamed to ccQuestions — Community Q&A Forum for improved WordPress.org search discoverability.
-* Main plugin file renamed from cc-qa.php to ccquestions.php. Plugin folder slug is now ccquestions.
-* Asset files renamed to match: ccquestions.css and ccquestions.js.
+* Main plugin file renamed from cc-qa.php to cc-questions.php. Plugin folder slug is now cc-questions.
+* Asset files renamed to match: cc-questions.css and cc-questions.js.
 
 = 2.8.2 =
 * Bugfix: Topic badges in user profiles now correctly link to the tag-filtered archive page. Fixed an anchor-inside-anchor HTML invalidity using a CSS overlay and JavaScript delegation pattern so the row click and the tag link click are fully independent.

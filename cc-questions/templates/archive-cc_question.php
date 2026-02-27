@@ -13,8 +13,8 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 $_qa_is_homepage = (bool) CC_QA_Admin::get( 'cc_qa_homepage_mode' ) && is_front_page();
 $_qa_page_url    = $_qa_is_homepage ? home_url( '/' ) : get_post_type_archive_link( 'cc_question' );
 
-wp_enqueue_style(  'cc-qa-style',  CC_QA_URL . 'assets/css/ccquestions.css',  array(), CC_QA_VERSION );
-wp_enqueue_script( 'cc-qa-script', CC_QA_URL . 'assets/js/ccquestions.js', array(), CC_QA_VERSION, array( 'strategy' => 'defer', 'in_footer' => true ) );
+wp_enqueue_style(  'cc-qa-style',  CC_QA_URL . 'assets/css/cc-questions.css',  array(), CC_QA_VERSION );
+wp_enqueue_script( 'cc-qa-script', CC_QA_URL . 'assets/js/cc-questions.js', array(), CC_QA_VERSION, array( 'strategy' => 'defer', 'in_footer' => true ) );
 wp_localize_script( 'cc-qa-script', 'CC_QA', cc_qa_js_config( $_qa_page_url ) );
 
 // SEO title: use admin override if set, else heading + site name

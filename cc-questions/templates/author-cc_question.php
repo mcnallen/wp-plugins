@@ -12,8 +12,8 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 $author_nicename = sanitize_user( get_query_var( 'cc_qa_author_name', '' ) );
 $profile_user    = $author_nicename ? get_user_by( 'slug', $author_nicename ) : null;
 
-wp_enqueue_style(  'cc-qa-style',  CC_QA_URL . 'assets/css/ccquestions.css',  array(), CC_QA_VERSION );
-wp_enqueue_script( 'cc-qa-script', CC_QA_URL . 'assets/js/ccquestions.js',    array(), CC_QA_VERSION, array( 'strategy' => 'defer', 'in_footer' => true ) );
+wp_enqueue_style(  'cc-qa-style',  CC_QA_URL . 'assets/css/cc-questions.css',  array(), CC_QA_VERSION );
+wp_enqueue_script( 'cc-qa-script', CC_QA_URL . 'assets/js/cc-questions.js',    array(), CC_QA_VERSION, array( 'strategy' => 'defer', 'in_footer' => true ) );
 wp_localize_script( 'cc-qa-script', 'CC_QA', cc_qa_js_config() );
 
 if ( ! $profile_user ) {

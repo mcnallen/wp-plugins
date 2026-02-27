@@ -251,8 +251,8 @@ class CC_QA_Leaderboard {
         $atts  = shortcode_atts( array( 'limit' => $default_limit ), $atts, 'cc_qa_leaderboard' );
         $limit = max( 3, min( 50, (int) $atts['limit'] ) );
 
-        wp_enqueue_style(  'cc-qa-style',  CC_QA_URL . 'assets/css/ccquestions.css',  array(), CC_QA_VERSION );
-        wp_enqueue_script( 'cc-qa-script', CC_QA_URL . 'assets/js/ccquestions.js', array(), CC_QA_VERSION, array( 'strategy' => 'defer', 'in_footer' => true ) );
+        wp_enqueue_style(  'cc-qa-style',  CC_QA_URL . 'assets/css/cc-questions.css',  array(), CC_QA_VERSION );
+        wp_enqueue_script( 'cc-qa-script', CC_QA_URL . 'assets/js/cc-questions.js', array(), CC_QA_VERSION, array( 'strategy' => 'defer', 'in_footer' => true ) );
 
         return self::render_inner( $limit, 'standalone' );
     }
