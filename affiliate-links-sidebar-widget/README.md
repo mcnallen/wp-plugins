@@ -1,5 +1,7 @@
 # Affiliate Links Sidebar Widget
 
+> ⚠️ This repository has moved under [github.com/wbuilddev](https://github.com/wbuilddev). This repo is archived and no longer maintained.
+
 Automatically finds affiliate links (e.g. `amzn.to`) in your content and displays them in a sidebar widget or via shortcode.
 
 **Free version:** Maximum **5 links** per post/page (configurable **1–5**).
