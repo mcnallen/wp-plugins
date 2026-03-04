@@ -1,5 +1,7 @@
 # ccQuestions — Community Q&A for WordPress
 
+> ⚠️ This repository has moved under [github.com/wbuilddev](https://github.com/wbuilddev) and has been renamed to wAnswers. This repo is archived and no longer maintained.
+
 **SEO-first, GEO-optimised community Q&A.** Every question gets its own URL, full QAPage JSON-LD schema, Open Graph tags, BreadcrumbList, and Speakable markup — out of the box, zero configuration required.
 
 [![Version](https://img.shields.io/badge/version-2.9.0-orange)](https://github.com/mcnallen/wp-plugins)
