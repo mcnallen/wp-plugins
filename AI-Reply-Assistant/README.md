@@ -1,5 +1,7 @@
 # AI Reply Assistant
 
+> ⚠️ This repository has moved under [github.com/wbuilddev](https://github.com/wbuilddev). This repo is archived and no longer maintained.
+
 Draft AI-assisted replies to real WordPress comments (human review required).
 
 ## Plugin Details
